@@ -2,20 +2,12 @@
 import { computed, toRefs } from 'vue';
 import NotePin from './NotePin.vue';
 import NoteTrash from './NoteTrash.vue';
-
-export interface INote {
-  id: string;
-  index: number;
-  title: string;
-  writer: string;
-  body: string;
-  pinned: boolean;
-  createdAt: string;
-}
+import { useNotesStore, type INote } from '@/stores/notes';
 
 const props = defineProps<{ item: INote }>();
-
 const { item } = toRefs(props);
+
+const { deleteNote, togglePin } = useNotesStore();
 
 const itemCreatedAt = computed(() => {
   const { createdAt } = item.value;
@@ -24,15 +16,6 @@ const itemCreatedAt = computed(() => {
 });
 
 const randomRotateDegree = computed(() => (Math.random() < 0.5 ? '-0.5deg' : '0.5deg'));
-
-const emit = defineEmits<{
-  (e: 'delete', noteId: string): void;
-  (e: 'togglePin', noteId: string): void;
-}>();
-
-const handleDeleteNote = (noteId: string) => emit('delete', noteId);
-
-const handleTogglePin = (noteId: string) => emit('togglePin', noteId);
 </script>
 
 <template>
@@ -43,8 +26,8 @@ const handleTogglePin = (noteId: string) => emit('togglePin', noteId);
       {{ item.body }}
     </p>
     <div class="buttonGroup" role="group">
-      <NotePin :size="16" :pinned="item.pinned" @click="handleTogglePin(item.id)" />
-      <NoteTrash :size="16" @click="handleDeleteNote(item.id)" />
+      <NotePin :size="16" :pinned="item.pinned" @click="togglePin(item.id)" />
+      <NoteTrash :size="16" @click="deleteNote(item.id)" />
     </div>
   </li>
 </template>
