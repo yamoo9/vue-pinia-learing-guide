@@ -1,31 +1,13 @@
 <script setup lang="ts">
-import NoteItem, { type INote } from './NoteItem.vue';
+import { useNotesStore } from '@/stores/notes';
+import NoteItem from './NoteItem.vue';
 
-const props = defineProps<{ items: INote[] }>();
-
-const emit = defineEmits<{
-  (e: 'delete', noteId: string): void;
-  (e: 'togglePin', noteId: string): void;
-}>();
-
-const handleDeleteNote = (noteId: string) => {
-  emit('delete', noteId);
-};
-
-const handleTogglePin = (noteId: string) => {
-  emit('togglePin', noteId);
-};
+const notes = useNotesStore();
 </script>
 
 <template>
   <ul>
-    <NoteItem
-      v-for="item in props.items"
-      :key="item.id"
-      :item="item"
-      @delete="handleDeleteNote"
-      @togglePin="handleTogglePin"
-    />
+    <NoteItem v-for="item in notes.pinnedfirstNoteItems" :key="item.id" :item="item" />
   </ul>
 </template>
 
