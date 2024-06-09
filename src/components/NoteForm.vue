@@ -1,16 +1,14 @@
 <script setup lang="ts">
+import {
+  MIN_BODY_LENGTH,
+  MIN_TITLE_LENGTH,
+  MIN_WRITER_LENGTH,
+  useNotesStore,
+  type INewNote
+} from '@/stores/notes';
 import { computed, reactive, ref } from 'vue';
-import type { INote } from './NoteItem.vue';
 
-type INewNote = Pick<INote, 'title' | 'writer' | 'body'>;
-
-const emit = defineEmits<{
-  (e: 'add', note: INewNote): void;
-}>();
-
-const MIN_TITLE_LENGTH = 3;
-const MIN_WRITER_LENGTH = 2;
-const MIN_BODY_LENGTH = 6;
+const { addNote } = useNotesStore();
 
 const note = reactive<INewNote>({
   title: '',
@@ -44,7 +42,7 @@ const handleSubmit = () => {
     if (disabledButton) return;
   }
 
-  emit('add', note);
+  addNote(note);
   handleReset();
 };
 
